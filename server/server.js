@@ -32,5 +32,7 @@ app.use(express.json());
 app.use("/api/auth",authRouter);  
 
 app.listen(port,()=>{
-    console.log(`Server is running on port ${port}`);
+    console.log(`Server is running on is running on port ${port}`);
+    console.log(`Server is running on is running on port ${port}`);
+    console.log(`Server is running on is running on port ${port}`);
 })
