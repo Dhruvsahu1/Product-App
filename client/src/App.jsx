@@ -16,11 +16,11 @@ import ShoppingListing from "./pages/shopping-view/listing"
 import ShoppingHome from "./pages/shopping-view/home"
 import CheckAuth from "./components/common/CheckAuth"
 import UnauthPage from "./pages/unauth-page"
-import { use } from "react"
+import { useSelector } from "react-redux"
 
 function App() {
-   const isAuthenticated = false;
-   const user = null
+  
+   const {user,isAuthenticated} = useSelector(state => state.auth)
   return (
     <div className="flex flex-col overflow-hidden bg-white ">
        {/* {here we can render common components} */}
