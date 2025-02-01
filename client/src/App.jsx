@@ -16,11 +16,27 @@ import ShoppingListing from "./pages/shopping-view/listing"
 import ShoppingHome from "./pages/shopping-view/home"
 import CheckAuth from "./components/common/CheckAuth"
 import UnauthPage from "./pages/unauth-page"
-import { useSelector } from "react-redux"
+import { useDispatch, useSelector } from "react-redux"
+import { useEffect } from "react"
+import { checkAuth } from "./store/auth-slice"
+import { Skeleton } from "@/components/ui/skeleton"
+
 
 function App() {
   
-   const {user,isAuthenticated} = useSelector(state => state.auth)
+   const {user,isAuthenticated,isLoading} = useSelector((state) => state.auth)
+   const dispatch = useDispatch();
+
+   useEffect(()=>{
+      dispatch(checkAuth());
+   },[dispatch])
+
+   if(isLoading){
+      return(
+         <Skeleton className="w-[100px] h-[20px] rounded-full" />
+      )
+   }
+
   return (
     <div className="flex flex-col overflow-hidden bg-white ">
        {/* {here we can render common components} */}

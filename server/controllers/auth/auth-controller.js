@@ -4,78 +4,109 @@ const User = require('../../models/User')
 
 //register
 
-const registerUser = async (req,res)=>{
-    const {userName , email , password } = req.body;
+const registerUser = async (req, res) => {
+    const { userName, email, password } = req.body;
 
-    try{
-        const checkUser = await User.findOne({email});
-        if(checkUser){
+    try {
+        const checkUser = await User.findOne({ email });
+        if (checkUser) {
             return res.json({
-                success:false,
-                message:"User Already exist with the same email please Try Again",
+                success: false,
+                message: "User Already exist with the same email please Try Again",
             })
         }
-        const hashPassword = await bcrypt.hash(password,12);
+        const hashPassword = await bcrypt.hash(password, 12);
         const newUser = new User({
-            userName , email , password : hashPassword
+            userName, email, password: hashPassword
         })
 
         await newUser.save();
         res.status(200).json({
-            success : true,
-            message : "Registration Successful"
+            success: true,
+            message: "Registration Successful"
         })
     }
-    catch(e){
+    catch (e) {
         console.log(e);
         res.status(500).json({
             success: false,
-            message : "Some error Occured"
+            message: "Some error Occured"
         })
     }
 }
 //login
 
-const loginUser  = async (req,res) =>{
-    const {email , password} = req.body;
-    try{
-        const checkUser = await User.findOne({email});
-        if(!checkUser){
+const loginUser = async (req, res) => {
+    const { email, password } = req.body;
+    try {
+        const checkUser = await User.findOne({ email });
+        if (!checkUser) {
             return res.json({
-                success:false,
-                message:`User doesn't exist! please register first`
+                success: false,
+                message: `User doesn't exist! please register first`
             })
         }
-        const checkpassword = await bcrypt.compare(password,checkUser.password);
-        if(!checkpassword){
+        const checkpassword = await bcrypt.compare(password, checkUser.password);
+        if (!checkpassword) {
             return res.status(200).json({
                 success: false,
-                message:`Incorrect password! please try again`
+                message: `Incorrect password! please try again`
             })
         }
         const token = jwt.sign({
-            id:checkUser._id,role: checkUser.role,email:checkUser.email
-        },'CLIENT_SECRET_KEY',{expiresIn: '60m'})
+            id: checkUser._id, role: checkUser.role, email: checkUser.email
+        }, 'CLIENT_SECRET_KEY', { expiresIn: '60m' })
 
-        res.cookie ('token',token,{httpOnly:true,secure:false}).json({
-            success:true,
-            message:`Logged in Succesfully!`,
-            user:{
+        res.cookie('token', token, { httpOnly: true, secure: false }).json({
+            success: true,
+            message: `Logged in Succesfully!`,
+            user: {
                 email: checkUser.email,
-                role:checkUser.role,
-                id:checkUser._id,
+                role: checkUser.role,
+                id: checkUser._id,
             }
         })
     }
-    catch(e){
+    catch (e) {
         console.log(e);
         res.status(500).json({
             success: false,
-            message : "Some error Occured"
+            message: "Some error Occured"
         })
     }
 }
 
 
+// logout
 
-module.exports = {registerUser,loginUser}
+const logoutUser = (req, res) => {
+    res.clearCookie('token').json({
+        success: true,
+        message: `Logout succesfully!`
+    })
+}
+
+// auth-middleware
+
+const authMiddleware = async (req, res, next) => {
+    const token = req.cookies.token;
+    if (!token) {
+        return res.status(401).json({
+            success: false,
+            message: `unAuthorized user!`
+        })
+    }
+    try {
+        const decoded = jwt.verify(token, 'CLIENT_SECRET_KEY');
+        req.user = decoded;
+        next();
+    } catch (e) {
+        res.status(401).json({
+            success: false,
+            message: `unAuthorized user!`
+        })
+    }
+}
+
+
+module.exports = { registerUser, loginUser, logoutUser, authMiddleware }
