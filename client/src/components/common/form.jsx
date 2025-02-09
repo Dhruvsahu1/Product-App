@@ -1,13 +1,14 @@
-import { SelectContent, SelectItem, SelectTrigger } from "@radix-ui/react-select";
-import { SelectValue } from "../ui/select";
+import { 
+    Select, 
+    SelectContent, 
+    SelectItem, 
+    SelectTrigger, 
+    SelectValue 
+} from "../ui/select"; 
 import { Label } from "../ui/label";
 import { Textarea } from "../ui/textarea";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
-
-
-
-
 
 function Commonform({ formControls, formData, setFormData, onSubmit, buttonText }) {
     function renderInputsByComponentType(getControlItem) {
@@ -41,12 +42,16 @@ function Commonform({ formControls, formData, setFormData, onSubmit, buttonText 
                         }
                         value={value}
                     >
-                        <SelectTrigger className="w-full">
-                            <SelectValue placeholder={getControlItem.placeholder} />
+                        <SelectTrigger className="w-full border-gray-300 hover:border-gray-500 transition duration-200 rounded-md p-2">
+                            <SelectValue placeholder={getControlItem.label} />
                         </SelectTrigger>
-                        <SelectContent>
+                        <SelectContent className="border border-gray-200 rounded-md shadow-md">
                             {getControlItem.options?.map((optionItem) => (
-                                <SelectItem key={optionItem.id} value={optionItem.id}>
+                                <SelectItem
+                                    key={optionItem.id}
+                                    value={optionItem.id}
+                                    className="hover:bg-gray-100 hover:text-gray-800 cursor-pointer transition duration-200 px-3 py-2 rounded-md"
+                                >
                                     {optionItem.label}
                                 </SelectItem>
                             ))}
@@ -76,15 +81,15 @@ function Commonform({ formControls, formData, setFormData, onSubmit, buttonText 
     }
 
     return (
-        <form onSubmit={onSubmit}>
-            <div className="flex flex-col gap-3">
-                {formControls.map((controlItem) => (
-                    <div className="grid w-full gap-1.5" key={controlItem.name}>
-                        <Label className="mb-1">{controlItem.label}</Label>
-                        {renderInputsByComponentType(controlItem)}
-                    </div>
-                ))}
-            </div>
+        <form onSubmit={onSubmit} className="space-y-4">
+            {formControls.map((controlItem) => (
+                <div className="grid w-full gap-1.5" key={controlItem.name}>
+                    <Label className="mb-1 text-gray-700 hover:text-gray-900 transition duration-200">
+                        {controlItem.label}
+                    </Label>
+                    {renderInputsByComponentType(controlItem)}
+                </div>
+            ))}
             <Button type="submit" className="mt-2 w-full">
                 {buttonText || 'Submit'}
             </Button>

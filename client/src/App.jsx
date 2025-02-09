@@ -38,7 +38,7 @@ function App() {
    }
 
   return (
-    <div className="flex flex-col overflow-hidden bg-white ">
+    <div className="flex flex-col w-screen overflow-hidden bg-white ">
        {/* {here we can render common components} */}
      
 
