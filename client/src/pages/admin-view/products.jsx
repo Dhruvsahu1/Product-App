@@ -1,3 +1,4 @@
+import ProductImageUpload from "@/components/admin-view/image-upload";
 import Commonform from "@/components/common/form";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
@@ -18,7 +19,9 @@ const initialFormData = {
 function AdminProduct() {
     const [openCreateProductsDialog, setOpenCreateProductsDialog] = useState(false);
     const [formData, setFormData] = useState(initialFormData);
-
+    const [imageFile,setImageFile] = useState(null); 
+    const [uploadImageUrl,setUploadImageUrl] = useState("");
+   
     function onSubmit() {
         console.log("Form Submitted", formData);
     }
@@ -30,12 +33,13 @@ function AdminProduct() {
             </div>
             <div className="grid gap-4 md:grid-cols-3 lg:grid-cols-4"></div>
 
-            {/* FIXED: Removed `title` prop and fixed `onOpenChange` */}
+           
             <Sheet open={openCreateProductsDialog} onOpenChange={setOpenCreateProductsDialog}>
                 <SheetContent side="right" className="overflow-auto">
                     <SheetHeader>
                         <SheetTitle>Add New Product</SheetTitle>
                     </SheetHeader>
+                    <ProductImageUpload imageFile={imageFile} setImageFile={setImageFile} uploadImageUrl={uploadImageUrl} setUploadImageUrl={setUploadImageUrl} />
                     <div className="py-6">
                         <Commonform
                             onSubmit={onSubmit}

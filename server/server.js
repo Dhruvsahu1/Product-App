@@ -14,7 +14,7 @@ const port = process.env.PORT|| 5000;
 
 app.use(
     cors({
-        origin : 'http://localhost:5174',
+        origin : 'http://localhost:5173',
         methods : ['GET','POST','DELETE','PUT'],
         allowedHeaders :[
             "content-type",
@@ -32,7 +32,5 @@ app.use(express.json());
 app.use("/api/auth",authRouter);  
 
 app.listen(port,()=>{
-    console.log(`Server is running on is running on port ${port}`);
-    console.log(`Server is running on is running on port ${port}`);
     console.log(`Server is running on is running on port ${port}`);
 })
