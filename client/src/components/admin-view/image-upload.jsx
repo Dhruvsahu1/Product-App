@@ -4,8 +4,9 @@ import { Label } from "../ui/label";
 import { useEffect, useRef } from "react";
 import { Button } from "../ui/button";
 import axios from "axios";
+import { Skeleton } from "../ui/skeleton";
 
-function ProductImageUpload({ imageFile, setImageFile, uploadImageUrl, setUploadImageUrl,setImageLoadingState }) {
+function ProductImageUpload({ imageFile, setImageFile, uploadImageUrl, setUploadImageUrl,setImageLoadingState,imageLoadingState }) {
   const inputRef = useRef(null);
 
   function handleImageFileChange(event) {
@@ -68,6 +69,7 @@ function ProductImageUpload({ imageFile, setImageFile, uploadImageUrl, setUpload
             <span>Drag & drop or click to upload image</span>
           </Label>
         ) : (
+          imageLoadingState ? <Skeleton className="h-10 bg-gray-100" />:
           <div className="flex items-center justify-between w-full p-2 border rounded-lg">
             <div className="flex items-center">
               <FileIcon className="w-8 h-8 text-primary mr-2" />

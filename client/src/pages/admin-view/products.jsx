@@ -3,7 +3,10 @@ import Commonform from "@/components/common/form";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { addProductFormElements } from "@/config";
-import { Fragment, useState } from "react"; 
+import { useToast } from "@/hooks/use-toast";
+import { addNewProduct, fetchAllProducts } from "@/store/admin/products-slice";
+import { Fragment, useEffect, useState } from "react"; 
+import { useDispatch, useSelector } from "react-redux";
 
 const initialFormData = {
     image: null,
@@ -21,10 +24,33 @@ function AdminProduct() {
     const [formData, setFormData] = useState(initialFormData);
     const [imageFile,setImageFile] = useState(null); 
     const [uploadImageUrl,setUploadImageUrl] = useState("");
-    const [imageLoadingState,setImageLoadingState] = useState(false);   
-    function onSubmit() {
-        console.log("Form Submitted", formData);
+    const [imageLoadingState,setImageLoadingState] = useState(false); 
+    const {productList} = useSelector(state=>state.adminProduct)
+    const dispatch = useDispatch();  
+    const {toast} = useToast();
+    function onSubmit(event) {
+        event.preventDefault();
+        dispatch(addNewProduct({
+            ...formData,
+            image:uploadImageUrl,
+        })).then((data)=>{
+            if(data?.payload?.success){
+                dispatch(fetchAllProducts());
+                setOpenCreateProductsDialog(false);
+                setImageFile(null);
+                setFormData(initialFormData);
+                toast({
+                    title: "Product added successfully",
+                })
+            }
+        })
     }
+
+    useEffect(()=>{
+        dispatch(fetchAllProducts())
+    },[dispatch])
+
+    console.log(productList,'productList');
 
     return (
         <Fragment>
@@ -39,7 +65,7 @@ function AdminProduct() {
                     <SheetHeader>
                         <SheetTitle>Add New Product</SheetTitle>
                     </SheetHeader>
-                    <ProductImageUpload imageFile={imageFile} setImageFile={setImageFile} uploadImageUrl={uploadImageUrl} setUploadImageUrl={setUploadImageUrl} setImageLoadingState = {setImageLoadingState} />
+                    <ProductImageUpload imageFile={imageFile} setImageFile={setImageFile} uploadImageUrl={uploadImageUrl} setUploadImageUrl={setUploadImageUrl} setImageLoadingState = {setImageLoadingState} imageLoadingState = {imageLoadingState} />
                     <div className="py-6">
                         <Commonform
                             onSubmit={onSubmit}
