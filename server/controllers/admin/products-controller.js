@@ -64,7 +64,7 @@ const editProduct = async (req, res) => {
         const { id } = req.params;
         const { image, title, description, category, brand, price, salePrice, totalStock } = req.body;
 
-        const findProduct = await Product.findById(id);
+        let findProduct = await Product.findById(id);
         if (!findProduct) {
             return res.status(404).json({ success: false, message: "Product Not Found" });
         }
@@ -74,8 +74,8 @@ const editProduct = async (req, res) => {
         if (description) findProduct.description = description;
         if (category) findProduct.category = category;
         if (brand) findProduct.brand = brand;
-        if (price) findProduct.price = price;
-        if (salePrice) findProduct.salePrice = salePrice;
+        if (price !== undefined && price !== null) findProduct.price = price;
+if (salePrice !== undefined && salePrice !== null) findProduct.salePrice = salePrice;
         if (totalStock) findProduct.totalStock = totalStock;
         if (image) findProduct.image = image;
 

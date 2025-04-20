@@ -10,7 +10,7 @@ import { Textarea } from "../ui/textarea";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 
-function Commonform({ formControls, formData, setFormData, onSubmit, buttonText }) {
+function Commonform({ formControls, formData, setFormData, onSubmit, buttonText,isBtnDisabled }) {
     function renderInputsByComponentType(getControlItem) {
         const value = formData[getControlItem.name] || '';
         switch (getControlItem.componentType) {
@@ -90,7 +90,7 @@ function Commonform({ formControls, formData, setFormData, onSubmit, buttonText 
                     {renderInputsByComponentType(controlItem)}
                 </div>
             ))}
-            <Button type="submit" className="mt-2 w-full">
+            <Button disabled={isBtnDisabled} type="submit" className="mt-2 w-full">
                 {buttonText || 'Submit'}
             </Button>
         </form>
