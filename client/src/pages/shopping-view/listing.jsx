@@ -14,13 +14,27 @@ import { ArrowUpDownIcon } from "lucide-react";
 import { useEffect, useState } from "react";
 import { fetchAllFilteredProducts } from "@/store/shop/products-slice";
 import ShoppingProductTile from "@/components/shopping-view/Product-tiles";
+import { createSearchParams, useSearchParams } from "react-router-dom";
 
+
+
+function createSearchParamsHelper(filterParams){
+    const queryParams = [];
+    for(const[key,value] of Object.entries(filterParams)){
+        if(Array.isArray(value) && value.length >0) {
+            const paramValue = value.join(",");
+            queryParams.push(`${key}=${encodeURIComponent(paramValue)}`)
+        }
+    }
+    return queryParams.join("&");
+}
 
 function ShoppingListing(){
     const dispatch = useDispatch();
     const {productList} = useSelector(state=> state.shopProducts)
     const[filters,setFilters] = useState({});
     const[sort,setSort] = useState(null);   
+    const[searchParams,setSearchParams] =useSearchParams();
 
 
     function handleSort(value){
@@ -49,13 +63,25 @@ function ShoppingListing(){
     }
 
     useEffect(()=>{
-        setSort("price-lowtohigh ");
+        setSort("price-lowtohigh");
         setFilters(JSON.parse(sessionStorage.getItem("filters")) || {});
     },[])
 
-    useEffect(()=>{
-        dispatch(fetchAllFilteredProducts())
-    },[dispatch])
+    useEffect(() => {
+        if (filters && sort) {
+          const createQueryString = createSearchParamsHelper(filters);
+          const fullQuery = `${createQueryString}&sortBy=${encodeURIComponent(sort)}`;
+          setSearchParams(new URLSearchParams(fullQuery));
+        }
+      }, [filters, sort]);
+      
+
+      useEffect(() => {
+        if (sort && filters) {
+          dispatch(fetchAllFilteredProducts({ filterParams: filters, sortParams: sort }));
+        }
+      }, [dispatch, sort, filters]);
+      
 
     console.log(filters);
     
